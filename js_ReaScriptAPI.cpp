@@ -3,7 +3,7 @@
 using namespace std;
 
 // This function is called when REAPER loads or unloads the extension.
-// If rec !- nil, the extenstion is being loaded.  If rec == nil, the extension is being UNloaded.
+// If rec != nil, the extenstion is being loaded.  If rec == nil, the extension is being UNloaded.
 extern "C" REAPER_PLUGIN_DLL_EXPORT int REAPER_PLUGIN_ENTRYPOINT(REAPER_PLUGIN_HINSTANCE hInstance, reaper_plugin_info_t *rec)
 {
 	if (rec)
@@ -73,7 +73,7 @@ extern "C" REAPER_PLUGIN_DLL_EXPORT int REAPER_PLUGIN_ENTRYPOINT(REAPER_PLUGIN_H
 		return 1; // success
 	}
 	// Does an extension need to do anything when unloading?  
-	// To prevent memort leaks, perhaps try to delete any stuff that may remain in memory?
+	// To prevent memory leaks, perhaps try to delete any stuff that may remain in memory?
 	// On Windows, LICE bitmaps are automatically destroyed when REAPER quits, but to make extra sure, this function will destroy them explicitly.
 	else
 		for (LICE_IBitmap* bm : Julian::LICEBitmaps)
