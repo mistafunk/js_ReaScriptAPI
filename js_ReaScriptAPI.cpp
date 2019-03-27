@@ -109,6 +109,95 @@ void JS_ReaScriptAPI_Version(double* versionOut)
 	*versionOut = 0.972;
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Virtual keys / Keyboard functions
+
+static unsigned char VK_Bitmap[256] { 0 };
+static unsigned char VK_BitmapHistory[256] { 0 };
+static unsigned char VK_Intercepts[256] { 0 };
+static constexpr size_t VK_Bitmap_sz_min1 = sizeof(VK_Bitmap)-1;
+int JS_VKeys_Callback(MSG* event, accelerator_register_t*)
+{
+	const WPARAM& keycode = event->wParam;
+	const UINT& uMsg = event->message;
+	switch (uMsg) 
+	{
+		case WM_KEYDOWN:
+		case WM_SYSKEYDOWN:
+			if (keycode < 256) {
+				VK_Bitmap[keycode] = 1;
+				if (VK_BitmapHistory[keycode] < 255) VK_BitmapHistory[keycode]++;
+			}
+			break;
+		case WM_KEYUP:
+		case WM_SYSKEYUP:
+			if (keycode < 256)
+				VK_Bitmap[keycode] = 0; // (keycode >> 3)] &= (~((uint8_t)(1 << (keycode & 0b00000111))));
+			break;
+	}
+	if ((VK_Intercepts[keycode] != 0) && (uMsg != WM_KEYUP) && (uMsg != WM_SYSKEYUP)) // Block keystroke, but not when releasing key
+		return 1; // Eat keystroke
+	else
+		return 0; // "Not my window", whatever this means?
+}
+void JS_VKeys_ClearHistory()
+{
+	std::fill_n(VK_BitmapHistory, 256, 0);
+}
+//void JS_VKeys_GetState(int* keys00to1FOut, int* keys20to3FOut, int* keys40to5FOut, int* keys60to7FOut, int* keys80to9FOut, int* keysA0toBFOut, int* keysC0toDFOut, int* keysE0toFFOut)
+bool JS_VKeys_GetState(char* stateOutNeedBig, int stateOutNeedBig_sz)
+{
+	if (realloc_cmd_ptr(&stateOutNeedBig, &stateOutNeedBig_sz, VK_Bitmap_sz_min1)) {
+		if (stateOutNeedBig_sz == VK_Bitmap_sz_min1) {
+			memcpy(stateOutNeedBig, VK_Bitmap+1, VK_Bitmap_sz_min1);
+			return true;
+		}
+	}
+	return false;
+}
+bool JS_VKeys_GetHistory(char* stateOutNeedBig, int stateOutNeedBig_sz)
+{
+	if (realloc_cmd_ptr(&stateOutNeedBig, &stateOutNeedBig_sz, VK_Bitmap_sz_min1)) {
+		if (stateOutNeedBig_sz == VK_Bitmap_sz_min1) {
+			memcpy(stateOutNeedBig, VK_BitmapHistory+1, VK_Bitmap_sz_min1);
+			return true;
+		}
+	}
+	return false;
+}
+int JS_VKeys_Intercept(int keyCode, int intercept)
+{
+	if (0 <= keyCode && keyCode < 256) {
+		if (intercept > 0 && VK_Intercepts[keyCode] < 255) VK_Intercepts[keyCode]++;
+		else if (intercept < 0 && VK_Intercepts[keyCode] > 0) VK_Intercepts[keyCode]--;
+		return VK_Intercepts[keyCode];
+	}
+	else if (keyCode == -1) {
+		int maxIntercept = 0;
+		if (intercept > 0) {
+			for (int i = 0; i < 256; i++) {
+				if (VK_Intercepts[i] < 255) VK_Intercepts[i]++;
+				if (VK_Intercepts[i] > maxIntercept) maxIntercept = VK_Intercepts[i];
+			}
+		}
+		else if (intercept < 0) {
+			for (int i = 0; i < 256; i++) {
+				if (VK_Intercepts[i] > 0) VK_Intercepts[i]--;
+				if (VK_Intercepts[i] > maxIntercept) maxIntercept = VK_Intercepts[i];
+			}
+		}
+		else { // intercept == 0
+			for (int i = 0; i < 256; i++) {
+				if (VK_Intercepts[i] > maxIntercept) maxIntercept = VK_Intercepts[i];
+			}
+		}
+		return maxIntercept;
+	}
+	return -1;
+}
+
+//////////////////////////////////////////////////////////////////////
+
 void JS_Localize(const char* USEnglish, const char* LangPackSection, char* translationOut, int translationOut_sz)
 {
 	const char* trans = __localizeFunc(USEnglish, LangPackSection, 0);
