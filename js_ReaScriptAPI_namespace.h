@@ -30,6 +30,8 @@ namespace Julian
 
 	//Store the size of allocated memory for Mem functions
 	map<void*, int> mapMallocToSize;
+	
+	accelerator_register_t sAccelerator{ JS_VKeys_Callback, true };
 
 	// Some global variables that will be used when searching for windows.
 	// Since these variables are global, all functions and their callbacks can access the variables without having to pass them via lParams.
