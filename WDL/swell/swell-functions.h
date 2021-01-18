@@ -89,7 +89,7 @@ SWELL_API_DEFINE(DWORD, GetTickCount,())
 ** NOTE: while it returns a 64 bit time value, it is only accurate to the second since thats 
 ** what fstat() returns. Takes an int filedes rather than a HANDLE.
 */
-SWELL_API_DEFINE(BOOL, GetFileTime,(int filedes, FILETIME *lpCreationTime, FILETIME *lpLastAccessTime, FILETIME *lpLastWriteTime))
+SWELL_API_DEFINE(bool, GetFileTime,(int filedes, FILETIME *lpCreationTime, FILETIME *lpLastAccessTime, FILETIME *lpLastWriteTime))
 
 /*
 ** *PrivateProfileString/Int():
@@ -105,12 +105,12 @@ SWELL_API_DEFINE(BOOL, GetFileTime,(int filedes, FILETIME *lpCreationTime, FILET
 **   It's probably not a good idea to push your luck with simultaneous writes from multiple
 **   modules in different threads/processes, but in theory it should work.
 */
-SWELL_API_DEFINE(BOOL, WritePrivateProfileString, (const char *appname, const char *keyname, const char *val, const char *fn))
+SWELL_API_DEFINE(bool, WritePrivateProfileString, (const char *appname, const char *keyname, const char *val, const char *fn))
 SWELL_API_DEFINE(DWORD, GetPrivateProfileString, (const char *appname, const char *keyname, const char *def, char *ret, int retsize, const char *fn))
 SWELL_API_DEFINE(int, GetPrivateProfileInt,(const char *appname, const char *keyname, int def, const char *fn))
-SWELL_API_DEFINE(BOOL, GetPrivateProfileStruct,(const char *appname, const char *keyname, void *buf, int bufsz, const char *fn))
-SWELL_API_DEFINE(BOOL, WritePrivateProfileStruct,(const char *appname, const char *keyname, const void *buf, int bufsz, const char *fn))
-SWELL_API_DEFINE(BOOL, WritePrivateProfileSection, (const char *appname, const char *strings, const char *fn))
+SWELL_API_DEFINE(bool, GetPrivateProfileStruct,(const char *appname, const char *keyname, void *buf, int bufsz, const char *fn))
+SWELL_API_DEFINE(bool, WritePrivateProfileStruct,(const char *appname, const char *keyname, const void *buf, int bufsz, const char *fn))
+SWELL_API_DEFINE(bool, WritePrivateProfileSection, (const char *appname, const char *strings, const char *fn))
 SWELL_API_DEFINE(DWORD, GetPrivateProfileSection, (const char *appname, char *strout, DWORD strout_len, const char *fn))
 
 /*
@@ -135,7 +135,7 @@ SWELL_API_DEFINE(void, SWELL_CFStringToCString, (const void *str, char *buf, int
 // #define funkiness because some Mac system headers define PtInRect as well.
 #endif
 #define PtInRect(r,p) SWELL_PtInRect(r,p)
-SWELL_API_DEFINE(BOOL, SWELL_PtInRect,(const RECT *r, POINT p))
+SWELL_API_DEFINE(bool, SWELL_PtInRect,(const RECT *r, POINT p))
 
 /*
 ** ShellExecute(): 
@@ -146,7 +146,7 @@ SWELL_API_DEFINE(BOOL, SWELL_PtInRect,(const RECT *r, POINT p))
 **   content1 can be explorer.exe (optionally with /select) (maps to open finder or xdg-open)
 **   otherwise content1 can be an app w/ parameters in content2
 */
-SWELL_API_DEFINE(BOOL, ShellExecute,(HWND hwndDlg, const char *action,  const char *content1, const char *content2, const char *content3, int blah))
+SWELL_API_DEFINE(bool, ShellExecute,(HWND hwndDlg, const char *action,  const char *content1, const char *content2, const char *content3, int blah))
 
 SWELL_API_DEFINE(int, MessageBox,(HWND hwndParent, const char *text, const char *caption, int type))
 
@@ -189,7 +189,7 @@ SWELL_API_DEFINE(void, ShowWindow,(HWND, int))
 
 SWELL_API_DEFINE(void, DestroyWindow,(HWND hwnd)) 
 
-SWELL_API_DEFINE(BOOL, SWELL_GetGestureInfo, (LPARAM lParam, GESTUREINFO* gi))
+SWELL_API_DEFINE(bool, SWELL_GetGestureInfo, (LPARAM lParam, GESTUREINFO* gi))
 
 SWELL_API_DEFINE(void, SWELL_HideApp,())
 
@@ -199,10 +199,10 @@ SWELL_API_DEFINE(void, SWELL_HideApp,())
 **
 ** macOS: SetDlgItemText() for an edit control does NOT send a WM_COMMAND notification (win32 and -generic do)
 */
-SWELL_API_DEFINE(BOOL, SetDlgItemText,(HWND, int idx, const char *text))
-SWELL_API_DEFINE(BOOL, SetDlgItemInt,(HWND, int idx, int val, int issigned))
-SWELL_API_DEFINE(int, GetDlgItemInt,(HWND, int idx, BOOL *translated, int issigned))
-SWELL_API_DEFINE(BOOL, GetDlgItemText,(HWND, int idx, char *text, int textlen))
+SWELL_API_DEFINE(bool, SetDlgItemText,(HWND, int idx, const char *text))
+SWELL_API_DEFINE(bool, SetDlgItemInt,(HWND, int idx, int val, int issigned))
+SWELL_API_DEFINE(int, GetDlgItemInt,(HWND, int idx, bool *translated, int issigned))
+SWELL_API_DEFINE(bool, GetDlgItemText,(HWND, int idx, char *text, int textlen))
 SWELL_API_DEFINE(int, GetWindowTextLength,(HWND))
 
 #ifndef GetWindowText
@@ -251,7 +251,7 @@ SWELL_API_DEFINE(HWND, SetParent,(HWND hwnd, HWND newPar))
 
 SWELL_API_DEFINE(HWND, GetWindow,(HWND hwnd, int what))
 
-SWELL_API_DEFINE(BOOL, EnumWindows, (BOOL (*proc)(HWND, LPARAM), LPARAM lp))
+SWELL_API_DEFINE(bool, EnumWindows, (bool (*proc)(HWND, LPARAM), LPARAM lp))
 
 SWELL_API_DEFINE(HWND,FindWindowEx,(HWND par, HWND lastw, const char *classname, const char *title))
 
@@ -274,8 +274,8 @@ SWELL_API_DEFINE(bool, GetWindowRect,(HWND hwnd, RECT *r))
 SWELL_API_DEFINE(void, GetWindowContentViewRect, (HWND hwnd, RECT *r)) 
 SWELL_API_DEFINE(void, GetClientRect,(HWND hwnd, RECT *r))
 SWELL_API_DEFINE(HWND, WindowFromPoint,(POINT p))
-SWELL_API_DEFINE(BOOL, WinOffsetRect, (LPRECT lprc, int dx, int dy))
-SWELL_API_DEFINE(BOOL, WinSetRect, (LPRECT lprc, int xLeft, int yTop, int xRight, int yBottom))
+SWELL_API_DEFINE(bool, WinOffsetRect, (LPRECT lprc, int dx, int dy))
+SWELL_API_DEFINE(bool, WinSetRect, (LPRECT lprc, int xLeft, int yTop, int xRight, int yBottom))
 SWELL_API_DEFINE(void,WinUnionRect,(RECT *out, const RECT *in1, const RECT *in2))
 SWELL_API_DEFINE(int,WinIntersectRect,(RECT *out, const RECT *in1, const RECT *in2))
 
@@ -283,7 +283,7 @@ SWELL_API_DEFINE(void, SetWindowPos,(HWND hwnd, HWND unused, int x, int y, int c
 
 SWELL_API_DEFINE(int, SWELL_SetWindowLevel, (HWND hwnd, int newlevel))
 
-SWELL_API_DEFINE(BOOL,InvalidateRect,(HWND hwnd, const RECT *r, int eraseBk))
+SWELL_API_DEFINE(bool,InvalidateRect,(HWND hwnd, const RECT *r, int eraseBk))
 
 SWELL_API_DEFINE(void,UpdateWindow,(HWND hwnd))
 
@@ -316,7 +316,7 @@ SWELL_API_DEFINE(LONG_PTR, GetWindowLong,(HWND hwnd, int idx))
 SWELL_API_DEFINE(LONG_PTR, SetWindowLong,(HWND hwnd, int idx, LONG_PTR val))
 
 
-SWELL_API_DEFINE(BOOL, ScrollWindow, (HWND hwnd, int xamt, int yamt, const RECT *lpRect, const RECT *lpClipRect))
+SWELL_API_DEFINE(bool, ScrollWindow, (HWND hwnd, int xamt, int yamt, const RECT *lpRect, const RECT *lpClipRect))
 
 /* 
 ** GetProp() SetProp() RemoveProp() EnumPropsEx()
@@ -327,7 +327,7 @@ SWELL_API_DEFINE(BOOL, ScrollWindow, (HWND hwnd, int xamt, int yamt, const RECT 
 */
 SWELL_API_DEFINE(int, EnumPropsEx,(HWND, PROPENUMPROCEX, LPARAM))
 SWELL_API_DEFINE(HANDLE, GetProp, (HWND, const char *))
-SWELL_API_DEFINE(BOOL, SetProp, (HWND, const char *, HANDLE))
+SWELL_API_DEFINE(bool, SetProp, (HWND, const char *, HANDLE))
 SWELL_API_DEFINE(HANDLE, RemoveProp, (HWND, const char *))
                 
 
@@ -361,7 +361,7 @@ SWELL_API_DEFINE(bool, IsWindow, (HWND hwnd))
 ** or NSWindow * directly, then you should kill all timers in -dealloc.
 */
 SWELL_API_DEFINE(UINT_PTR, SetTimer,(HWND hwnd, UINT_PTR timerid, UINT rate, TIMERPROC tProc))
-SWELL_API_DEFINE(BOOL, KillTimer,(HWND hwnd, UINT_PTR timerid))
+SWELL_API_DEFINE(bool, KillTimer,(HWND hwnd, UINT_PTR timerid))
 
 #ifdef SWELL_TARGET_OSX
 /*
@@ -421,7 +421,7 @@ SWELL_API_DEFINE(void, ListView_SetItemCount,(HWND h, int cnt))
 #endif
 #define ListView_SetItemCountEx(list,cnt,flags) ListView_SetItemCount(list,cnt)
 
-SWELL_API_DEFINE(void, ListView_EnsureVisible,(HWND h, int i, BOOL pok))
+SWELL_API_DEFINE(void, ListView_EnsureVisible,(HWND h, int i, bool pok))
 SWELL_API_DEFINE(void, ListView_SetImageList,(HWND h, HIMAGELIST imagelist, int which)) 
 SWELL_API_DEFINE(int, ListView_SubItemHitTest,(HWND h, LVHITTESTINFO *pinf))
 SWELL_API_DEFINE(void, ListView_GetItemText,(HWND hwnd, int item, int subitem, char *text, int textmax))
@@ -429,12 +429,12 @@ SWELL_API_DEFINE(void, ListView_SortItems,(HWND hwnd, PFNLVCOMPARE compf, LPARAM
 SWELL_API_DEFINE(bool, ListView_Scroll,(HWND h, int xscroll, int yscroll))
 SWELL_API_DEFINE(int, ListView_GetTopIndex,(HWND h))
 SWELL_API_DEFINE(int, ListView_GetCountPerPage,(HWND h))
-SWELL_API_DEFINE(BOOL, ListView_SetColumnOrderArray,(HWND h, int cnt, int* arr))
-SWELL_API_DEFINE(BOOL, ListView_GetColumnOrderArray,(HWND h, int cnt, int* arr))
+SWELL_API_DEFINE(bool, ListView_SetColumnOrderArray,(HWND h, int cnt, int* arr))
+SWELL_API_DEFINE(bool, ListView_GetColumnOrderArray,(HWND h, int cnt, int* arr))
 SWELL_API_DEFINE(HWND, ListView_GetHeader,(HWND h))
 SWELL_API_DEFINE(int, Header_GetItemCount,(HWND h))
-SWELL_API_DEFINE(BOOL, Header_GetItem,(HWND h, int col, HDITEM* hi))
-SWELL_API_DEFINE(BOOL, Header_SetItem,(HWND h, int col, HDITEM* hi))
+SWELL_API_DEFINE(bool, Header_GetItem,(HWND h, int col, HDITEM* hi))
+SWELL_API_DEFINE(bool, Header_SetItem,(HWND h, int col, HDITEM* hi))
 
   // NOTE: the Cocoa versions of these functions behave differently than swell-generic and Windows:
   // they return the absolute (unscrolled) coordinates. In order to behave properly, the caller should
@@ -451,7 +451,7 @@ SWELL_API_DEFINE(int, SWELL_GetListViewHeaderHeight, (HWND h))
 #define ImageList_Create(x,y,a,b,c) ImageList_CreateEx();
 #endif
 SWELL_API_DEFINE(HIMAGELIST, ImageList_CreateEx,())
-SWELL_API_DEFINE(BOOL, ImageList_Remove, (HIMAGELIST list, int idx))
+SWELL_API_DEFINE(bool, ImageList_Remove, (HIMAGELIST list, int idx))
 SWELL_API_DEFINE(int, ImageList_ReplaceIcon,(HIMAGELIST list, int offset, HICON image))
 SWELL_API_DEFINE(int, ImageList_Add,(HIMAGELIST list, HBITMAP image, HBITMAP mask))
 SWELL_API_DEFINE(void, ImageList_Destroy, (HIMAGELIST))
@@ -459,26 +459,26 @@ SWELL_API_DEFINE(void, ImageList_Destroy, (HIMAGELIST))
 ** TabCtrl api. 
 */
 SWELL_API_DEFINE(int, TabCtrl_GetItemCount,(HWND hwnd))
-SWELL_API_DEFINE(BOOL, TabCtrl_DeleteItem,(HWND hwnd, int idx))
+SWELL_API_DEFINE(bool, TabCtrl_DeleteItem,(HWND hwnd, int idx))
 SWELL_API_DEFINE(int, TabCtrl_InsertItem,(HWND hwnd, int idx, TCITEM *item))
 SWELL_API_DEFINE(int, TabCtrl_SetCurSel,(HWND hwnd, int idx))
 SWELL_API_DEFINE(int, TabCtrl_GetCurSel,(HWND hwnd))
-SWELL_API_DEFINE(BOOL, TabCtrl_AdjustRect, (HWND hwnd, BOOL fLarger, RECT *r))
+SWELL_API_DEFINE(bool, TabCtrl_AdjustRect, (HWND hwnd, bool fLarger, RECT *r))
 
 /*
 ** TreeView
 */
 
 SWELL_API_DEFINE(HTREEITEM, TreeView_InsertItem, (HWND hwnd, TV_INSERTSTRUCT *ins)) 
-SWELL_API_DEFINE(BOOL, TreeView_Expand,(HWND hwnd, HTREEITEM item, UINT flag))
+SWELL_API_DEFINE(bool, TreeView_Expand,(HWND hwnd, HTREEITEM item, UINT flag))
 SWELL_API_DEFINE(HTREEITEM, TreeView_GetSelection,(HWND hwnd))
 SWELL_API_DEFINE(void, TreeView_DeleteItem,(HWND hwnd, HTREEITEM item))
 SWELL_API_DEFINE(void, TreeView_DeleteAllItems,(HWND hwnd))
 SWELL_API_DEFINE(void, TreeView_SelectItem,(HWND hwnd, HTREEITEM item))
-SWELL_API_DEFINE(BOOL, TreeView_GetItem,(HWND hwnd, LPTVITEM pitem))
-SWELL_API_DEFINE(BOOL, TreeView_SetItem,(HWND hwnd, LPTVITEM pitem))
+SWELL_API_DEFINE(bool, TreeView_GetItem,(HWND hwnd, LPTVITEM pitem))
+SWELL_API_DEFINE(bool, TreeView_SetItem,(HWND hwnd, LPTVITEM pitem))
 SWELL_API_DEFINE(HTREEITEM, TreeView_HitTest, (HWND hwnd, TVHITTESTINFO *hti))
-SWELL_API_DEFINE(BOOL, TreeView_SetIndent,(HWND hwnd, int indent))
+SWELL_API_DEFINE(bool, TreeView_SetIndent,(HWND hwnd, int indent))
 
 SWELL_API_DEFINE(HTREEITEM, TreeView_GetChild, (HWND hwnd, HTREEITEM item))
 SWELL_API_DEFINE(HTREEITEM, TreeView_GetNextSibling, (HWND hwnd, HTREEITEM item))
@@ -517,15 +517,15 @@ SWELL_API_DEFINE(bool, SetMenuItemText,(HMENU hMenu, int idx, int flag, const ch
 SWELL_API_DEFINE(bool, EnableMenuItem,(HMENU hMenu, int idx, int en))
 SWELL_API_DEFINE(bool, DeleteMenu,(HMENU hMenu, int idx, int flag))
 SWELL_API_DEFINE(bool, CheckMenuItem,(HMENU hMenu, int idx, int chk))
-SWELL_API_DEFINE(void, InsertMenuItem,(HMENU hMenu, int pos, BOOL byPos, MENUITEMINFO *mi))
+SWELL_API_DEFINE(void, InsertMenuItem,(HMENU hMenu, int pos, bool byPos, MENUITEMINFO *mi))
 SWELL_API_DEFINE(void,SWELL_InsertMenu,(HMENU menu, int pos, unsigned int flag, UINT_PTR idx, const char *str))
 #ifdef InsertMenu
 #undef InsertMenu
 #endif
 #define InsertMenu SWELL_InsertMenu
 
-SWELL_API_DEFINE(BOOL, GetMenuItemInfo,(HMENU hMenu, int pos, BOOL byPos, MENUITEMINFO *mi))
-SWELL_API_DEFINE(BOOL, SetMenuItemInfo,(HMENU hMenu, int pos, BOOL byPos, MENUITEMINFO *mi))
+SWELL_API_DEFINE(bool, GetMenuItemInfo,(HMENU hMenu, int pos, bool byPos, MENUITEMINFO *mi))
+SWELL_API_DEFINE(bool, SetMenuItemInfo,(HMENU hMenu, int pos, bool byPos, MENUITEMINFO *mi))
 SWELL_API_DEFINE(void, DrawMenuBar,(HWND))
 
 
@@ -567,7 +567,7 @@ SWELL_API_DEFINE(HMENU, SWELL_DuplicateMenu,(HMENU menu))
 **   swellSetMenu:(HMENU) and swellGetMenu. SWELL windows will automatically set the 
 **   application menu via NSApp setMainMenu: when activated.
 */
-SWELL_API_DEFINE(BOOL, SetMenu,(HWND hwnd, HMENU menu))
+SWELL_API_DEFINE(bool, SetMenu,(HWND hwnd, HMENU menu))
 SWELL_API_DEFINE(HMENU, GetMenu,(HWND hwnd))
 
 /*
@@ -656,7 +656,7 @@ SWELL_API_DEFINE(void,SWELL_BroadcastMessage,(UINT, WPARAM, LPARAM))
 **   processed later from a timer (in the main thread).
 ** When a window is destroyed any outstanding messages will be discarded for it.
 */
-SWELL_API_DEFINE(BOOL, PostMessage,(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam))
+SWELL_API_DEFINE(bool, PostMessage,(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam))
 
 /*
 ** SWELL_MessageQueue_Flush():
@@ -758,7 +758,7 @@ SWELL_API_DEFINE(void, SWELL_SetCursor,(HCURSOR curs))
 ** macOS only
 ** Globally enable or disable emulating mouse right-click using control+left-click
 */
-SWELL_API_DEFINE(void, SWELL_EnableRightClickEmulate, (BOOL enable))
+SWELL_API_DEFINE(void, SWELL_EnableRightClickEmulate, (bool enable))
 
 
 /*
@@ -769,8 +769,8 @@ SWELL_API_DEFINE(HCURSOR, SWELL_GetCursor,())
 SWELL_API_DEFINE(HCURSOR, SWELL_GetLastSetCursor,())
 
 SWELL_API_DEFINE(bool, SWELL_IsCursorVisible, ())
-SWELL_API_DEFINE(int, SWELL_ShowCursor, (BOOL bShow))
-SWELL_API_DEFINE(BOOL, SWELL_SetCursorPos, (int X, int Y))
+SWELL_API_DEFINE(int, SWELL_ShowCursor, (bool bShow))
+SWELL_API_DEFINE(bool, SWELL_SetCursorPos, (int X, int Y))
 
 /*
 ** SWELL_GetViewPort
@@ -806,8 +806,8 @@ SWELL_API_DEFINE(void, GlobalFree,(HANDLE h))
 
 
 SWELL_API_DEFINE(HANDLE,CreateThread,(void *TA, DWORD stackSize, DWORD (*ThreadProc)(LPVOID), LPVOID parm, DWORD cf, DWORD *tidOut))
-SWELL_API_DEFINE(HANDLE,CreateEvent,(void *SA, BOOL manualReset, BOOL initialSig, const char *ignored))
-SWELL_API_DEFINE(HANDLE,CreateEventAsSocket,(void *SA, BOOL manualReset, BOOL initialSig, const char *ignored))
+SWELL_API_DEFINE(HANDLE,CreateEvent,(void *SA, bool manualReset, bool initialSig, const char *ignored))
+SWELL_API_DEFINE(HANDLE,CreateEventAsSocket,(void *SA, bool manualReset, bool initialSig, const char *ignored))
 
 
 #ifdef _beginthreadex
@@ -818,10 +818,10 @@ SWELL_API_DEFINE(HANDLE,CreateEventAsSocket,(void *SA, BOOL manualReset, BOOL in
 SWELL_API_DEFINE(DWORD,GetCurrentThreadId,())
 SWELL_API_DEFINE(DWORD,WaitForSingleObject,(HANDLE hand, DWORD msTO))
 SWELL_API_DEFINE(DWORD,WaitForAnySocketObject,(int numObjs, HANDLE *objs, DWORD msTO))
-SWELL_API_DEFINE(BOOL,CloseHandle,(HANDLE hand))
-SWELL_API_DEFINE(BOOL,SetThreadPriority,(HANDLE evt, int prio))
-SWELL_API_DEFINE(BOOL,SetEvent,(HANDLE evt))
-SWELL_API_DEFINE(BOOL,ResetEvent,(HANDLE evt))
+SWELL_API_DEFINE(bool,CloseHandle,(HANDLE hand))
+SWELL_API_DEFINE(bool,SetThreadPriority,(HANDLE evt, int prio))
+SWELL_API_DEFINE(bool,SetEvent,(HANDLE evt))
+SWELL_API_DEFINE(bool,ResetEvent,(HANDLE evt))
 
 #ifdef SWELL_TARGET_OSX
 SWELL_API_DEFINE(void,SWELL_EnsureMultithreadedCocoa,())
@@ -841,7 +841,7 @@ SWELL_API_DEFINE(int,SWELL_GetProcessExitCode,(HANDLE hand))
 SWELL_API_DEFINE(HINSTANCE,LoadLibraryGlobals,(const char *fileName, bool symbolsAsGlobals))
 SWELL_API_DEFINE(HINSTANCE,LoadLibrary,(const char *fileName))
 SWELL_API_DEFINE(void *,GetProcAddress,(HINSTANCE hInst, const char *procName))
-SWELL_API_DEFINE(BOOL,FreeLibrary,(HINSTANCE hInst))
+SWELL_API_DEFINE(bool,FreeLibrary,(HINSTANCE hInst))
 
 SWELL_API_DEFINE(void*,SWELL_GetBundle,(HINSTANCE hInst))
 
@@ -939,12 +939,12 @@ SWELL_API_DEFINE(int, GetGlyphIndicesW, (HDC ctx, wchar_t *buf, int len, unsigne
 
 SWELL_API_DEFINE(void, RoundRect,(HDC ctx, int x, int y, int x2, int y2, int xrnd, int yrnd))
 SWELL_API_DEFINE(void, PolyPolyline,(HDC ctx, POINT *pts, DWORD *cnts, int nseg))
-SWELL_API_DEFINE(BOOL, GetTextMetrics,(HDC ctx, TEXTMETRIC *tm))
+SWELL_API_DEFINE(bool, GetTextMetrics,(HDC ctx, TEXTMETRIC *tm))
 SWELL_API_DEFINE(int, GetTextFace,(HDC ctx, int nCount, LPTSTR lpFaceName))
 #ifdef SWELL_TARGET_OSX
 SWELL_API_DEFINE(void *, GetNSImageFromHICON,(HICON))
 #endif
-SWELL_API_DEFINE(BOOL, GetObject, (HICON icon, int bmsz, void *_bm))
+SWELL_API_DEFINE(bool, GetObject, (HICON icon, int bmsz, void *_bm))
 SWELL_API_DEFINE(HICON, CreateIconIndirect, (ICONINFO* iconinfo))
 SWELL_API_DEFINE(HICON, LoadNamedImage,(const char *name, bool alphaFromMask))
 SWELL_API_DEFINE(void, DrawImageInRect,(HDC ctx, HICON img, const RECT *r))
@@ -980,7 +980,7 @@ SWELL_API_DEFINE(int, SWELL_EnableMetal,(HWND h, int mode)) // can only call onc
 #endif
 
 SWELL_API_DEFINE(HDC, BeginPaint,(HWND, PAINTSTRUCT *))
-SWELL_API_DEFINE(BOOL, EndPaint,(HWND, PAINTSTRUCT *))
+SWELL_API_DEFINE(bool, EndPaint,(HWND, PAINTSTRUCT *))
 
 SWELL_API_DEFINE(HDC, GetDC,(HWND)) // use these sparingly! they kinda work but shouldnt be overused!!
 SWELL_API_DEFINE(HDC, GetWindowDC,(HWND)) 
@@ -996,7 +996,7 @@ SWELL_API_DEFINE(HGDIOBJ,SWELL_CloneGDIObject,(HGDIOBJ a))
 
 SWELL_API_DEFINE(int, GetSystemMetrics, (int))
 
-SWELL_API_DEFINE(BOOL, DragQueryPoint,(HDROP,LPPOINT))
+SWELL_API_DEFINE(bool, DragQueryPoint,(HDROP,LPPOINT))
 SWELL_API_DEFINE(void, DragFinish,(HDROP))
 SWELL_API_DEFINE(UINT, DragQueryFile,(HDROP,UINT,char *,UINT))
 
@@ -1063,12 +1063,12 @@ SWELL_API_DEFINE(HWND,SWELL_CreateXBridgeWindow,(HWND viewpar, void **wref, RECT
 
 SWELL_API_DEFINE(bool,SWELL_GenerateGUID,(void *g))
 
-SWELL_API_DEFINE(BOOL,EnumChildWindows,(HWND hwnd, BOOL (*cwEnumFunc)(HWND,LPARAM),LPARAM lParam))
+SWELL_API_DEFINE(bool,EnumChildWindows,(HWND hwnd, bool (*cwEnumFunc)(HWND,LPARAM),LPARAM lParam))
 
 
-SWELL_API_DEFINE(BOOL,SWELL_IsGroupBox,(HWND))
-SWELL_API_DEFINE(BOOL,SWELL_IsButton,(HWND))
-SWELL_API_DEFINE(BOOL,SWELL_IsStaticText,(HWND))
+SWELL_API_DEFINE(bool,SWELL_IsGroupBox,(HWND))
+SWELL_API_DEFINE(bool,SWELL_IsButton,(HWND))
+SWELL_API_DEFINE(bool,SWELL_IsStaticText,(HWND))
 SWELL_API_DEFINE(void,SWELL_GetDesiredControlSize,(HWND hwnd, RECT *r))
 
 SWELL_API_DEFINE(int,AddFontResourceEx,(LPCTSTR str, DWORD fl, void *pdv))

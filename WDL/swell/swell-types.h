@@ -142,7 +142,7 @@ INT_PTR SWELLAppMain(int msg, INT_PTR parm1, INT_PTR parm2); // to be implemente
 
 
 // basic types
-typedef signed char BOOL;
+//typedef signed char bool;
 typedef unsigned char BYTE;
 typedef unsigned short WORD;
 typedef unsigned int DWORD;
@@ -511,7 +511,7 @@ typedef struct
 
 typedef struct {
   HDC         hdc;
-  BOOL        fErase;
+  bool        fErase;
   RECT        rcPaint;
 } PAINTSTRUCT;
 
@@ -535,9 +535,9 @@ typedef struct
 typedef struct _DROPFILES {
    DWORD pFiles;                       // offset of file list
    POINT pt;                           // drop point (client coords)
-   BOOL fNC;                           // is it on NonClient area
+   bool fNC;                           // is it on NonClient area
                                        // and pt is in screen coords
-   BOOL fWide;                         // WIDE character switch
+   bool fWide;                         // WIDE character switch
 } DROPFILES, *LPDROPFILES;
 
 
@@ -613,7 +613,7 @@ typedef struct tagGESTURECONFIG
 #endif
 
 
-typedef BOOL (*PROPENUMPROCEX)(HWND hwnd, const char *lpszString, HANDLE hData, LPARAM lParam);
+typedef bool (*PROPENUMPROCEX)(HWND hwnd, const char *lpszString, HANDLE hData, LPARAM lParam);
 
 // swell specific type
 typedef HWND (*SWELL_ControlCreatorProc)(HWND parent, const char *cname, int idx, const char *classname, int style, int x, int y, int w, int h);                                           
@@ -625,7 +625,7 @@ typedef HWND (*SWELL_ControlCreatorProc)(HWND parent, const char *cname, int idx
 #ifdef __cplusplus
 extern "C"  {
 #endif
-__attribute__ ((visibility ("default"))) BOOL WINAPI DllMain(HINSTANCE hInstDLL, DWORD fdwReason, LPVOID lpvReserved);
+__attribute__ ((visibility ("default"))) bool WINAPI DllMain(HINSTANCE hInstDLL, DWORD fdwReason, LPVOID lpvReserved);
 #ifdef __cplusplus
 };
 #endif
@@ -1368,7 +1368,7 @@ extern struct SWELL_MenuResourceIndex *SWELL_curmodule_menuresource_head;
 
 typedef struct _ICONINFO
 {
-  BOOL fIcon;
+  bool fIcon;
   DWORD xHotspot;
   DWORD yHotspot;
   HBITMAP hbmMask;

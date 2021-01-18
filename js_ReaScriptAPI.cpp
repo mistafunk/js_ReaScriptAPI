@@ -662,7 +662,7 @@ int JS_Dialog_BrowseForSaveFile(const char* windowTitle, const char* initialFold
 	// Set default extension and filter.
 	const char* newExtList = ((strlen(extensionList) > 0) ? extensionList : "All files (*.*)\0*.*\0\0");
 
-	BOOL gotFile = FALSE;
+	bool gotFile = FALSE;
 
 #ifdef _WIN32
 	// These Windows file dialogs do not understand /, so v0.970 added this quick hack to replace with \.
@@ -707,7 +707,7 @@ int JS_Dialog_BrowseForSaveFile(const char* windowTitle, const char* initialFold
 	// On macOS, this function easily crashes if the extList is empty or not properly formatted.
 	try {
 		// returns TRUE if file was chosen.
-		gotFile = (BOOL)BrowseForSaveFile(windowTitle, initialFolder, initialFile, newExtList, fileNameOutNeedBig, fileNameOutNeedBig_sz);
+		gotFile = (bool)BrowseForSaveFile(windowTitle, initialFolder, initialFile, newExtList, fileNameOutNeedBig, fileNameOutNeedBig_sz);
 	}
 	catch(...) {
 		return -3;
@@ -1183,7 +1183,7 @@ void  JS_Window_Enable(void* windowHWND, bool enable)
 	#ifdef _WDL_SWELL
 	if (ValidatePtr(windowHWND, "HWND"))
 	#endif
-	EnableWindow((HWND)windowHWND, (BOOL)enable); // (enable ? (int)1 : (int)0));
+	EnableWindow((HWND)windowHWND, (bool)enable); // (enable ? (int)1 : (int)0));
 }
 
 void  JS_Window_Destroy(void* windowHWND)
@@ -1443,12 +1443,12 @@ int ConvertSetHWNDToString(std::set<HWND>& foundHWNDs, char*& reaperBufNeedBig, 
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-BOOL CALLBACK JS_Window_FindTop_Callback_Top(HWND hwnd, LPARAM structPtr)
+bool CALLBACK JS_Window_FindTop_Callback_Top(HWND hwnd, LPARAM structPtr)
 {
 	using namespace Julian;
 	sEnumWindows& s = *(reinterpret_cast<sEnumWindows*>(structPtr));
 	s.temp[0] = '\0';
-	GetWindowText(hwnd, s.temp, s.tempLen); // WARNING: swell only returns a BOOL, not the title length
+	GetWindowText(hwnd, s.temp, s.tempLen); // WARNING: swell only returns a bool, not the title length
 	s.temp[s.tempLen - 1] = '\0'; // Make sure that loooong titles are properly terminated.
 	for (unsigned int i = 0; (s.temp[i] != '\0') && (i < s.tempLen); i++) s.temp[i] = (char)tolower(s.temp[i]); // FindWindow is case-insensitive, so this implementation is too
 	if (	 (s.exact  && (strcmp(s.temp, s.target) == 0))
@@ -1489,12 +1489,12 @@ void* JS_Window_FindTop(const char* title, bool exact)
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-BOOL CALLBACK JS_Window_Find_Callback_Child(HWND hwnd, LPARAM structPtr)
+bool CALLBACK JS_Window_Find_Callback_Child(HWND hwnd, LPARAM structPtr)
 {
 	using namespace Julian;
 	sEnumWindows& s = *(reinterpret_cast<sEnumWindows*>(structPtr));
 	s.temp[0] = '\0';
-	GetWindowText(hwnd, s.temp, s.tempLen); // WARNING: swell only returns a BOOL, not the title length.
+	GetWindowText(hwnd, s.temp, s.tempLen); // WARNING: swell only returns a bool, not the title length.
 	s.temp[s.tempLen - 1] = '\0'; // Make sure that loooong titles are properly terminated.
 	for (unsigned int i = 0; (s.temp[i] != '\0') && (i < s.tempLen); i++) s.temp[i] = (char)tolower(s.temp[i]); // FindWindow is case-insensitive, so this implementation is too
 	if (     (s.exact  && (strcmp(s.temp, s.target) == 0)    )
@@ -1507,12 +1507,12 @@ BOOL CALLBACK JS_Window_Find_Callback_Child(HWND hwnd, LPARAM structPtr)
 		return TRUE;
 }
 
-BOOL CALLBACK JS_Window_Find_Callback_Top(HWND hwnd, LPARAM structPtr)
+bool CALLBACK JS_Window_Find_Callback_Top(HWND hwnd, LPARAM structPtr)
 {
 	using namespace Julian;
 	sEnumWindows& s = *(reinterpret_cast<sEnumWindows*>(structPtr));
 	s.temp[0] = '\0';
-	GetWindowText(hwnd, s.temp, s.tempLen); // WARNING: swell only returns a BOOL, not the title length
+	GetWindowText(hwnd, s.temp, s.tempLen); // WARNING: swell only returns a bool, not the title length
 	s.temp[s.tempLen-1] = '\0'; // Make sure that loooong titles are properly terminated.
 	for (unsigned int i = 0; (s.temp[i] != '\0') && (i < s.tempLen); i++) s.temp[i] = (char)tolower(s.temp[i]); // FindWindow is case-insensitive, so this implementation is too
 	if (     (s.exact  && (strcmp(s.temp, s.target) == 0)    )
@@ -1558,12 +1558,12 @@ void* JS_Window_Find(const char* title, bool exact)
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 
-BOOL CALLBACK JS_Window_FindChild_Callback(HWND hwnd, LPARAM structPtr)
+bool CALLBACK JS_Window_FindChild_Callback(HWND hwnd, LPARAM structPtr)
 {
 	using namespace Julian;
 	sEnumWindows& s = *(reinterpret_cast<sEnumWindows*>(structPtr));
 	s.temp[0] = '\0';
-	GetWindowText(hwnd, s.temp, s.tempLen); // WARNING: swell only returns a BOOL, not the title length.
+	GetWindowText(hwnd, s.temp, s.tempLen); // WARNING: swell only returns a bool, not the title length.
 	for (unsigned int i = 0; (s.temp[i] != '\0') && (i < s.tempLen); i++) s.temp[i] = (char)tolower(s.temp[i]); // Convert to lowercase
 	if (     (s.exact  && (strcmp(s.temp, s.target) == 0))
 		|| (!(s.exact) && (strstr(s.temp, s.target) != NULL)))
@@ -1610,14 +1610,14 @@ void* JS_Window_FindChild(void* parentHWND, const char* title, bool exact)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-BOOL CALLBACK JS_Window_ListFind_Callback_Child(HWND hwnd, LPARAM structPtr)
+bool CALLBACK JS_Window_ListFind_Callback_Child(HWND hwnd, LPARAM structPtr)
 {
 	using namespace Julian;
 	sEnumWindows& s = *(reinterpret_cast<sEnumWindows*>(structPtr));
 	set<HWND>& foundHWNDs = *(s.foundHWNDs);
 
 	s.temp[0] = '\0';
-	GetWindowText(hwnd, s.temp, s.tempLen); // WARNING: swell only returns a BOOL, not the title length.
+	GetWindowText(hwnd, s.temp, s.tempLen); // WARNING: swell only returns a bool, not the title length.
 	// Make sure that loooong titles are properly terminated.
 	s.temp[s.tempLen - 1] = '\0';
 	// FindWindow is case-insensitive, so this implementation is too. Convert to lowercase.
@@ -1630,14 +1630,14 @@ BOOL CALLBACK JS_Window_ListFind_Callback_Child(HWND hwnd, LPARAM structPtr)
 	return TRUE;
 }
 
-BOOL CALLBACK JS_Window_ListFind_Callback_Top(HWND hwnd, LPARAM structPtr)
+bool CALLBACK JS_Window_ListFind_Callback_Top(HWND hwnd, LPARAM structPtr)
 {
 	using namespace Julian;
 	sEnumWindows& s = *(reinterpret_cast<sEnumWindows*>(structPtr));
 	set<HWND>& foundHWNDs = *(s.foundHWNDs);
 
 	s.temp[0] = '\0';
-	GetWindowText(hwnd, s.temp, s.tempLen); // WARNING: swell only returns a BOOL, not the title length.
+	GetWindowText(hwnd, s.temp, s.tempLen); // WARNING: swell only returns a bool, not the title length.
 	// Make sure that loooong titles are properly terminated.
 	s.temp[s.tempLen - 1] = '\0'; 
 	// FindWindow is case-insensitive, so this implementation is too. Convert to lowercase.
@@ -1718,7 +1718,7 @@ int JS_Window_ArrayFind(const char* title, bool exact, double* reaperarray)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-BOOL CALLBACK JS_Window_ListAllChild_Callback(HWND hwnd, LPARAM lParam)
+bool CALLBACK JS_Window_ListAllChild_Callback(HWND hwnd, LPARAM lParam)
 {
 	set<HWND>& foundHWNDs = *(reinterpret_cast<set<HWND>*>(lParam));
 	foundHWNDs.insert(hwnd);
@@ -1752,7 +1752,7 @@ int JS_Window_ArrayAllChild(void* parentHWND, double* reaperarray)
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-BOOL CALLBACK JS_Window_ListAllTop_Callback(HWND hwnd, LPARAM lParam)
+bool CALLBACK JS_Window_ListAllTop_Callback(HWND hwnd, LPARAM lParam)
 {
 	set<HWND>& foundHWNDs = *(reinterpret_cast<set<HWND>*>(lParam));
 	foundHWNDs.insert(hwnd);
@@ -1779,7 +1779,7 @@ int JS_Window_ArrayAllTop(double* reaperarray)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 
-BOOL CALLBACK JS_MIDIEditor_ListAll_Callback_Child(HWND hwnd, LPARAM lParam)
+bool CALLBACK JS_MIDIEditor_ListAll_Callback_Child(HWND hwnd, LPARAM lParam)
 {
 	if (MIDIEditor_GetMode(hwnd) != -1) // Is MIDI editor?
 	{
@@ -1789,7 +1789,7 @@ BOOL CALLBACK JS_MIDIEditor_ListAll_Callback_Child(HWND hwnd, LPARAM lParam)
 	return TRUE;
 }
 
-BOOL CALLBACK JS_MIDIEditor_ListAll_Callback_Top(HWND hwnd, LPARAM lParam)
+bool CALLBACK JS_MIDIEditor_ListAll_Callback_Top(HWND hwnd, LPARAM lParam)
 {
 	if (MIDIEditor_GetMode(hwnd) != -1) // Is MIDI editor?
 	{
@@ -2351,7 +2351,7 @@ bool JS_Window_InvalidateRect(HWND windowHWND, int left, int top, int right, int
 	#endif
 	}
 	
-	return InvalidateRect(windowHWND, &rect, (BOOL)eraseBackground);
+	return InvalidateRect(windowHWND, &rect, (bool)eraseBackground);
 }
 
 bool JS_Window_SetOpacity(HWND windowHWND, const char* mode, double value)
@@ -2474,7 +2474,7 @@ void JS_AddressFromArray(double* array, double* addressOut)
 //		REAPER may crash completely.
 // AFAIK, this implementation only searches WDL/swell windows, but this shouldn't be a problem,
 //		since scripts are in any case only supposed to access REAPER's windows.
-BOOL CALLBACK JS_Window_IsWindow_Callback_Child(HWND hwnd, LPARAM lParam)
+bool CALLBACK JS_Window_IsWindow_Callback_Child(HWND hwnd, LPARAM lParam)
 {
 	HWND& target = *(reinterpret_cast<HWND*>(lParam));
 	if (hwnd == target)
@@ -2486,7 +2486,7 @@ BOOL CALLBACK JS_Window_IsWindow_Callback_Child(HWND hwnd, LPARAM lParam)
 		return TRUE;
 }
 
-BOOL CALLBACK JS_Window_IsWindow_Callback_Top(HWND hwnd, LPARAM lParam)
+bool CALLBACK JS_Window_IsWindow_Callback_Top(HWND hwnd, LPARAM lParam)
 {
 	HWND& target = *(reinterpret_cast<HWND*>(lParam));
 	if (hwnd == target)
@@ -2982,7 +2982,7 @@ LRESULT CALLBACK JS_WindowMessage_Intercept_Callback(HWND hwnd, UINT uMsg, WPARA
 				int width = compositeCanvas->getWidth();
 				int height = compositeCanvas->getHeight();
 				if (width < cR.right || height < cR.bottom)
-					BOOL resizeOK = compositeCanvas->resize(width > cR.right ? width : cR.right, height > cR.bottom ? height : cR.bottom);
+					bool resizeOK = compositeCanvas->resize(width > cR.right ? width : cR.right, height > cR.bottom ? height : cR.bottom);
 			}
 
 			// Finally, do the compositing!  Iterate through all linked bitmaps.
@@ -3556,7 +3556,7 @@ void* JS_GDI_CreatePen(int width, int color)
 #endif
 void* JS_GDI_CreateFont(int height, int weight, int angle, bool italic, bool underline, bool strikeOut, const char* fontName)
 {
-	HGDIOBJ object = CreateFont(height, 0, angle, 0, weight, (BOOL)italic, (BOOL)underline, (BOOL)strikeOut, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, ANTIALIASED_QUALITY, DEFAULT_PITCH | FF_DONTCARE, fontName);
+	HGDIOBJ object = CreateFont(height, 0, angle, 0, weight, (bool)italic, (bool)underline, (bool)strikeOut, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, ANTIALIASED_QUALITY, DEFAULT_PITCH | FF_DONTCARE, fontName);
 	if (object)
 		Julian::setGDIObjects.insert(object);
 	return object;
@@ -3836,7 +3836,7 @@ int JS_Composite(HWND hwnd, int dstx, int dsty, int dstw, int dsth, LICE_IBitmap
 	
 	if (autoUpdate)
 	{
-		BOOL invalidateOK;
+		bool invalidateOK;
 		RECT& iR = mapWindowData[hwnd].doneInvalidRect;
 
 		// No invalidates yet in this paint cycle, so must send InvalidateRect
@@ -3978,7 +3978,7 @@ int  JS_Composite_Delay(HWND hwnd, double minTime, double maxTime, int maxBitmap
 
 void* JS_LICE_CreateBitmap(bool isSysBitmap, int width, int height)
 {
-	LICE_IBitmap* bm = LICE_CreateBitmap((BOOL)isSysBitmap, width, height); // If SysBitmap, can BitBlt to/from screen like HDC.
+	LICE_IBitmap* bm = LICE_CreateBitmap((bool)isSysBitmap, width, height); // If SysBitmap, can BitBlt to/from screen like HDC.
 	// Immediately get HDC and store, so that all scripts can use the same HDC.
 	if (bm) {
 		HDC dc = LICE__GetDC(bm);

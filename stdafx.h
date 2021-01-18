@@ -30,7 +30,7 @@
 // Make sure that all the REAPER-related #included files compile the correct sections of the files
 #define REAPERAPI_IMPLEMENT
 #ifdef __APPLE__
-  #pragma message ("Defined: APPLE")
+  //#pragma message ("Defined: APPLE")
   #define SWELL_TARGET_OSX
   #undef SWELL_NO_METAL
 #elif __linux__
@@ -87,12 +87,12 @@
 #endif
 
 // WARNING: REAPER has a handful of UNDOCUMENTED API functions that are not declared in reaper_plugin_functions.h, so must declare here:
-BOOL(WINAPI *CoolSB_GetScrollInfo)(HWND hwnd, int nBar, LPSCROLLINFO lpsi);
-int (WINAPI *CoolSB_SetScrollInfo)(HWND hwnd, int nBar, LPSCROLLINFO lpsi, BOOL fRedraw);
-int (WINAPI *CoolSB_SetScrollPos)(HWND hwnd, int nBar, int nPos, BOOL fRedraw);
+bool(WINAPI *CoolSB_GetScrollInfo)(HWND hwnd, int nBar, LPSCROLLINFO lpsi);
+int (WINAPI *CoolSB_SetScrollInfo)(HWND hwnd, int nBar, LPSCROLLINFO lpsi, bool fRedraw);
+int (WINAPI *CoolSB_SetScrollPos)(HWND hwnd, int nBar, int nPos, bool fRedraw);
 void(*AttachWindowTopmostButton)(HWND hwnd);
 void(*AttachWindowResizeGrip)(HWND hwnd);
-//BOOL(WINAPI *RemoveXPStyle)(HWND hwnd, int rm); // What does this function do?  Doesn't seem to work.
+//bool(WINAPI *RemoveXPStyle)(HWND hwnd, int rm); // What does this function do?  Doesn't seem to work.
 
 #include "js_ReaScriptAPI.h"
 #include "js_ReaScriptAPI_namespace.h"
